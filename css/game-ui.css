@@ -26,8 +26,8 @@ body {
 #world {
 	position: relative;
 	float: left;
-	width: 600px;
-	height: 800px;
+	width: 500px;
+	height: 600px;
 	padding:10px;
 	margin:10px;
 	background-color: rgba(249, 141, 7, 1);
@@ -36,22 +36,22 @@ body {
 #work {
 	position: relative;
 	float: left;
-	width: 600px;
-	height: 800px;
+	width: 500px;
+	height: 600px;
 	padding:10px;
 	margin:10px;
 	background-color: rgba(225, 58, 84, 1);
 }
 
 #world_canvas {
-	width: 600px;
-	height: 800px;
+	width: 500px;
+	height: 600px;
 	background-color: rgba(249, 141, 7, 1);
 }
 
 #work_canvas {
-	width: 600px;
-	height: 800px;
+	width: 500px;
+	height: 600px;
 	background-color: rgba(225, 58, 84, 1);
 }
 

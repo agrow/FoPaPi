@@ -4,12 +4,14 @@
 
 // Display the World
 // It's using a singleton pattern
-define(["processing", "modules/models/vector"], function(PROCESSING, Vector) {
-    console.log("Init world view");
+define(["processing", "modules/models/vector", "modules/models/work"], function(PROCESSING, Vector, Work) {
+	
+    console.log("Init work view");
 
     return (function() {
 
-        var world;
+        var work;
+        var camera;
 
         var processing;
 
@@ -19,6 +21,21 @@ define(["processing", "modules/models/vector"], function(PROCESSING, Vector) {
         var time = {
             total : 0,
             ellapsed : 0.1,
+        };
+        
+        // hard-coded in CSS. Used to init processing view
+        var dimensions = {
+        	width: 500,
+        	height: 600 
+        }
+        
+        var init = function(){
+        	work = Work;
+        	work.init();
+        	// Global variable
+        	fopapiGame.work = work;
+        	
+        	camera = work.getCamera();
         };
 
         var update = function(currentTime) {
@@ -31,6 +48,8 @@ define(["processing", "modules/models/vector"], function(PROCESSING, Vector) {
 
             time.total = currentTime;
             utilities.debugOutput("Update " + time.total.toFixed(2) + " fps: " + (1 / time.ellapsed).toFixed(2));
+            
+            work.update(time);
 
         };
 
@@ -87,7 +106,7 @@ define(["processing", "modules/models/vector"], function(PROCESSING, Vector) {
         var drawLayer = function(g, options) {
             var p = new Vector(0, 0);
 
-            world.draw(g, options);
+            work.draw(g, options);
             $.each(activeObjects, function(index, obj) {
                 // figure out where this object is, and translate appropriately
                 g.pushMatrix();
@@ -140,11 +159,26 @@ define(["processing", "modules/models/vector"], function(PROCESSING, Vector) {
         };
 
         // attaching the sketchProc function to the canvas
-        console.log("START UNIVERSE VIEW");
-        canvas = document.getElementById("world_canvas");
+        console.log("START WORK VIEW");
+        canvas = document.getElementById("work_canvas");
+        
+        /* Processing functions */
+       var transformScreenToWorld = function(p) {
+            p.x += camera.center.x;
+            p.y += camera.center.y;
+        };
+
+        var toWorldPosition = function(p) {
+            var p2 = new Vector(p);
+            p2.x += camera.center.x;
+            p2.y += camera.center.y;
+            return p2;
+
+        };
+        
         var initProcessing = function(g) {
 
-            addDrawingUtilities(g);
+            //addDrawingUtilities(g);
             g.size(dimensions.width, dimensions.height);
 
             g.colorMode(g.HSB, 1);
@@ -152,7 +186,6 @@ define(["processing", "modules/models/vector"], function(PROCESSING, Vector) {
 
             g.draw = function() {
                 if (fopapiGame.ready) {
-
                     draw(g);
                 }
             };
@@ -160,6 +193,7 @@ define(["processing", "modules/models/vector"], function(PROCESSING, Vector) {
         processing = new Processing(canvas, initProcessing);
 
         return {
+        	init : init,
             dimensions : dimensions,
 
             setWorld : function(u) {
@@ -169,7 +203,6 @@ define(["processing", "modules/models/vector"], function(PROCESSING, Vector) {
             },
             transformScreenToWorld : transformScreenToWorld,
             toWorldPosition : toWorldPosition,
-            onUpdate : onUpdate,
 
             getTouchableAt : getTouchableAt,
         };
