@@ -7,6 +7,13 @@ body {
 	position: relative;
 }
 
+#control_panel {
+	width: 1030px;
+	background-color: rgba(243,168,199, 1);
+	padding:10px;
+	margin:10px;
+}
+
 #controls {
 	z-index: 50;
 	position: relative;
@@ -58,7 +65,7 @@ body {
 #debug_controls {
 	z-index: 40;
 	position: relative;
-	background-color: rgba(155, 155, 155, 1);
+	background-color: rgba(82,29,75, 1);
 	
 	float: left;
 	margin: 10px;
@@ -74,6 +81,11 @@ body {
 	float: left;
 	padding: 10px;
 	margin: 10px;
+}
+
+.imgResize{
+	max-height: 100%;
+	max-width: 100%;
 }
 
 .palette {
