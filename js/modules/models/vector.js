@@ -39,6 +39,13 @@ define([], function() {
             clone : function() {
                 return new Vector(this);
             },
+            
+            cloneInto : function(v) {
+                v.x = this.x;
+                v.y = this.y;
+                v.z = this.z;
+
+            },
 
             addMultiple : function(v, m) {
                 this.x += v.x * m;
