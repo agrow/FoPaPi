@@ -21,9 +21,8 @@ define(["inheritance", "modules/models/vector", "noise", "kcolor"], function(Inh
 
                 this.setRadius(Math.random() * 20 + 70);
 
-                this.position.setToPolar(Math.random() * 200 + 100, Math.random() * 100);
+                this.position = new Vector(0, 0);
 
-                this.initAsTouchable();
                 this.debugOutputLines = [];
 
 				this.lifespans = [];

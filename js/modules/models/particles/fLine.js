@@ -34,7 +34,7 @@ define(["inheritance", "modules/models/vector", "uparticle"], function(Inheritan
 					if(vect === undefined){
 						console.log("ERROR: CANNOT SET POINT TO UNDEFINED VECTOR");
 					} else {
-						this.p[num].cloneInto(vect);
+						vect.cloneInto(this.p[num]);
 					}
 					
 				}
@@ -60,19 +60,29 @@ define(["inheritance", "modules/models/vector", "uparticle"], function(Inheritan
 					//		if > top-y, stop it at top-y.
 					//		if < bottom-y, stop it at bottom-y
 					// Repeat with left-x
-					var x = fopapiGame.view.dimensions.width/2;
+					var x = fopapiGame.workView.dimensions.width/2;
 					var y = this.m * x + this.b;
 					var vect = new Vector(x, y);
 					
 					this.restrainInScreen(vect);
 					
+					/////////////////// Doesn't keep directionality //////////////
+					this.setPoint(3, vect);
+					x = -fopapiGame.workView.dimensions.width/2;
+					y = this.m * x + this.b;
+					vect.setTo(x, y);
+					
+					this.restrainInScreen(vect);
+					this.setPoint(0, vect);
+					
 					////////////////// KEEPS DIRECTIONALITY ///////////////////////
+					/*
 					// if this right x is closer to p3 than p0 (ie distance to 0 is > than to 3)
 					if(this.p[1].getDistanceTo(vect) > this.p[2].getDistanceTo(vect)){
 						// put it in point 3
 						this.setPoint(3, vect);
 						// Put the other in point 0
-						x = -fopapiGame.view.dimensions.width/2;
+						x = -fopapiGame.workView.dimensions.width/2;
 						y = this.m * x + this.b;
 						vect.setTo(x, y);
 						
@@ -83,22 +93,22 @@ define(["inheritance", "modules/models/vector", "uparticle"], function(Inheritan
 						// put it in point 0
 						this.setPoint(0, vect);
 						// Put the other in point 3
-						x = -fopapiGame.view.dimensions.width/2;
+						x = -fopapiGame.workView.dimensions.width/2;
 						y = this.m * x + this.b;
 						vect.setTo(x, y);
 						
 						this.restrainInScreen(vect);
 						this.setPoint(3, vect);
-					}
+					}*/
 				}
 			},
 			
 			restrainInScreen: function(vect){
-				if(vect.x > fopapiGame.view.dimensions.width/2) vect.x = fopapiGame.view.dimensions.width/2;
-				if(vect.x < -fopapiGame.view.dimensions.width/2) vect.x = -fopapiGame.view.dimensions.width/2;
+				if(vect.x > fopapiGame.workView.dimensions.width/2) vect.x = fopapiGame.workView.dimensions.width/2;
+				if(vect.x < -fopapiGame.workView.dimensions.width/2) vect.x = -fopapiGame.workView.dimensions.width/2;
 				
-				if(vect.y > fopapiGame.view.dimensions.height/2) vect.y = fopapiGame.view.dimensions.height/2;
-				if(vect.y < -fopapiGame.view.dimensions.height/2) vect.y = -fopapiGame.view.dimensions.height/2;
+				//if(vect.y > fopapiGame.workView.dimensions.height/2) vect.y = fopapiGame.workView.dimensions.height/2;
+				//if(vect.y < -fopapiGame.workView.dimensions.height/2) vect.y = -fopapiGame.workView.dimensions.height/2;
 				
 			},
 
@@ -108,11 +118,29 @@ define(["inheritance", "modules/models/vector", "uparticle"], function(Inheritan
                 var g = context.g;
                 
             },
+            
+            draw : function(g){
+            	//this._super(g);
+            	
+            	this.idColor.fill(g);
+                g.noStroke();
+            	for(var i = 0; i < this.p.length; i++){
+            		this.p[i].drawCircle(g, 3);
+            	}
+            	
+            	g.stroke();
+            	this.p[0].drawLineTo(g, this.p[3]);
+            },
 
 
             update : function(time) {
                 this._super(time);
-            }
+            },
+            
+            toString : function(){
+            	return "P0: " + this.p[0] + "\nP1: " + this.p[1] + "\nP2: " + this.p[2] + "\nP3: " + this.p[3];
+            },
+            
         });
 
         return FLine;
