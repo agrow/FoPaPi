@@ -4,7 +4,7 @@
 
 // Its the World!
 
-define(["modules/models/vector", "kcolor", "modules/models/fopapiDesign"], function(Vector, KColor, FopapiDesign) {
+define(["modules/models/vector", "kcolor", "modules/models/fopapiDesign", "modules/models/particles/fLine"], function(Vector, KColor, FopapiDesign, FLine) {
 
     return (function() {
 
@@ -12,9 +12,14 @@ define(["modules/models/vector", "kcolor", "modules/models/fopapiDesign"], funct
 		var imageReady;
         var toAdd = [];
         
+
         var design;
 
+        var testLine = new FLine();
+        var testClick = false;
+
         function draw(g, options) {
+        	g.noStroke();
 			drawGrid(g, 100);
 			
 	        drawImage(g);
@@ -28,11 +33,14 @@ define(["modules/models/vector", "kcolor", "modules/models/fopapiDesign"], funct
 	        	if(fopapiGame.touch.pressed){
 	        		//console.log(fopapiGame.touch.currentWorkPosition);
 	        		fopapiGame.touch.currentWorkPosition.drawCircle(g, 6);
+	        		//console.log(fopapiGame.touch.currentWorkPosition);
+	        		utilities.debugOutput("Mouse down at " + fopapiGame.touch.currentWorkPosition);
+	        		
 	        	} else {
 	        		fopapiGame.touch.currentWorkPosition.drawCircle(g, 3);
 	        	}
-	        	
 	        }
+	        testLine.draw(g, options);
 	        
         };
         
@@ -98,8 +106,8 @@ define(["modules/models/vector", "kcolor", "modules/models/fopapiDesign"], funct
         		this.resized = false;
         	}
         };
-        
-        
+
+      
         function drawGrid(g, spacing){
         	utilities.debugOutput("Drawing grid");
         	// Make the grid if it hasn't been made
@@ -128,6 +136,31 @@ define(["modules/models/vector", "kcolor", "modules/models/fopapiDesign"], funct
         function update(time) {
             fopapiGame.time.worldTime = time.total;
 			design.update(time);
+
+            if(fopapiGame.touch){
+	        	if(fopapiGame.touch.pressed){
+		           utilities.debugOutput("MD (update) at " + fopapiGame.touch.currentWorkPosition);
+	            }
+            }
+            
+			if(fopapiGame.touch){
+	        	if(fopapiGame.touch.pressed){
+	        		if(testClick === false){
+	        			// click something!
+	        			console.log("Clicking at " + fopapiGame.touch.currentWorkPosition);
+	        			testLine.setPoint(1, fopapiGame.touch.currentWorkPosition);
+	        			testClick = true;
+	        			console.log("SETTING POINT CLICKING line: \n" + testLine);
+	        			 
+	        		}
+	        	} else {
+	        		testClick = false;
+	        	}
+	        	
+	        	testLine.setPoint(2, fopapiGame.touch.currentWorkPosition);
+	        	testLine.calcEdgePoints();
+	        }
+
         };
 
         function init() {
