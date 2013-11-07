@@ -22,7 +22,7 @@ define(['modules/models/fopapiProject'], function(FopapiProject) {
 												fopapiGame.liveProject.loadImage(evt.target)
 											});
 	};
-	
+
 	var update = function(){
 		
 	};

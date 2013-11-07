@@ -18,8 +18,8 @@ define(['modules/views/work_view', 'modules/controllers/work_controller', 'modul
 
         // Give the game controller access to the work view so that it
         //  can find objects by screen position
-        workController.setWorkView(workView);
-        workController.init();
+        console.log(workController);
+        workController.init(workView);
         
         FopapiOverview.init();
 

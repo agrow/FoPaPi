@@ -19,7 +19,7 @@ define(["inheritance", "modules/models/vector", "noise", "kcolor"], function(Inh
                 particleCount++;
                 this.idColor = new KColor((this.idNumber * .289 + .31) % 1, 1, 1);
 
-                this.setRadius(Math.random() * 20 + 70);
+                this.setRadius(5);
 
                 this.position.setToPolar(Math.random() * 200 + 100, Math.random() * 100);
 
@@ -56,18 +56,9 @@ define(["inheritance", "modules/models/vector", "noise", "kcolor"], function(Inh
 
                 this.clearDebugOutput();
 
-                var d = this.position.magnitude();
-
-                if (d === 0 || d === NaN)
-                    d = .001;
-
                 //DEBUG CHECKING
                 if(this.DEBUGPOSITION){
                 	utilities.debugOutput(this.idNumber + "pos: " + this.position);
-                }
-                if(this.DEBUGVELOCITY){
-                	utilities.debugOutput(this.idNumber + "vel: " + this.velocity);
-
                 }
 
 				//utilities.debugOutput(this.idNumber + " lifespans.length: " + this.lifespans.length);
@@ -105,14 +96,7 @@ define(["inheritance", "modules/models/vector", "noise", "kcolor"], function(Inh
 
             },
             drawOverlay : function(g, options) {
-                //var h = (this.idNumber * .212 + .3) % 1;
-                if (this.touchHeld) {
 
-                    this.idColor.stroke(g, .2, 1);
-                    g.noFill();
-                    g.strokeWeight(5);
-                    g.ellipse(0, 0, this.radius + 10, this.radius + 10);
-                }
 
                 // Draw the text
                 this.idColor.fill(g);

@@ -7,7 +7,7 @@ define(["inheritance", "modules/models/vector"], function(Inheritance, Vector) {
 
         var FopapiProject = Class.extend({
             init : function() {
-                this.pictureURL; // Name of the image
+                this.pictureFile; // File Obj
                 this.picture; // the raw image data string
                 this.img; // Javascript Image object
             },
@@ -18,11 +18,13 @@ define(["inheritance", "modules/models/vector"], function(Inheritance, Vector) {
             		fopapiGame.liveProject.pictureURL = input.files[0];
             		var reader = new FileReader();
             		
+            		//TO DO: CHECK THE TYPE input.files[0].type === "image/jpeg" or whatever
+            		
             		reader.onload = function(e){
             			
             			var img = new Image;
             			img.onload = function(){
-            				console.log(img);
+            				//console.log(img);
             				/*
             				var divAspect = 500/600;
             				var imgAspect = img.width/img.height;
@@ -35,15 +37,19 @@ define(["inheritance", "modules/models/vector"], function(Inheritance, Vector) {
             			
             			fopapiGame.liveProject.picture = e.target.result;
             			$("#imgPreview").attr('src', e.target.result);
+            			
+            			// TOTALLY works
+            			fopapiGame.work.setImageReady(e.target.result);
             		};
             		reader.readAsDataURL(input.files[0]);
-            		fopapiGame.liveProject.pictureURL = input.files[0];
-            		console.log("Trying to read file!");
+            		fopapiGame.liveProject.pictureFile = input.files[0];
+            		console.log("Reading file " + input.files[0].name);
             	} else {
             		$("#imgPreview").attr('src', "#");
             		console.log("No file selected...?");
             	}
             },
+            
 
         });
         return FopapiProject;

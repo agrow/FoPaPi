@@ -2,7 +2,7 @@
  * @author Kate Compton
  */
 
-// Display the World
+// Display the Work
 // It's using a singleton pattern
 define(["processing", "modules/models/vector", "modules/models/work"], function(PROCESSING, Vector, Work) {
 	
@@ -33,7 +33,7 @@ define(["processing", "modules/models/vector", "modules/models/work"], function(
         	work = Work;
         	work.init();
         	// Global variable
-        	fopapiGame.work = work;
+        	fopapiGame.work = Work;
         	
         	camera = work.getCamera();
         };
@@ -56,7 +56,7 @@ define(["processing", "modules/models/vector", "modules/models/work"], function(
 
         var draw = function(g) {
             utilities.clearDebugOutput();
-            g.background(.55, .8, .1);
+            g.background(.55, .8, .11);
             g.pushMatrix();
             g.translate(g.width / 2, g.height / 2);
 
@@ -84,17 +84,17 @@ define(["processing", "modules/models/vector", "modules/models/work"], function(
             });
 
             // Draw eaach layer in order
-            drawLayer(g, {
-                layer : "bg",
-            });
+            //drawLayer(g, {
+            //    layer : "bg",
+            //});
 
             drawLayer(g, {
                 layer : "main",
             });
 
-            drawLayer(g, {
-                layer : "overlay",
-            });
+            //drawLayer(g, {
+            //    layer : "overlay",
+            //});
 
             // Draw the touch
             
@@ -123,13 +123,13 @@ define(["processing", "modules/models/vector", "modules/models/work"], function(
         };
 
         var getTouchableAt = function(p) {
-        	/*
+        	
             // utilities.debugOutput("Get touchable at " + p);
 
             var touchables = [];
             var target = new Vector(p.x + camera.center.x, p.y + camera.center.y, 0);
 
-            var minDist = 10;
+            var minDist = 5;
             // go through all the objects and find the closest (inefficient, but fine for now)
             // utilities.debugArrayOutput(activeObjects);
 
@@ -154,7 +154,7 @@ define(["processing", "modules/models/vector", "modules/models/work"], function(
             //          utilities.debugOutput("...done<br> ");
             // utilities.debugArrayOutput(touchables);
 
-            return touchables;*/
+            return touchables;
 
         };
 
@@ -163,12 +163,12 @@ define(["processing", "modules/models/vector", "modules/models/work"], function(
         canvas = document.getElementById("work_canvas");
         
         /* Processing functions */
-       var transformScreenToWorld = function(p) {
+       var transformScreenToWork = function(p) {
             p.x += camera.center.x;
             p.y += camera.center.y;
         };
 
-        var toWorldPosition = function(p) {
+        var toWorkPosition = function(p) {
             var p2 = new Vector(p);
             p2.x += camera.center.x;
             p2.y += camera.center.y;
@@ -196,13 +196,13 @@ define(["processing", "modules/models/vector", "modules/models/work"], function(
         	init : init,
             dimensions : dimensions,
 
-            setWorld : function(u) {
-                world = u;
-                camera = world.getCamera();
+            setWork : function(u) {
+                work = u;
+                camera = work.getCamera();
 
             },
-            transformScreenToWorld : transformScreenToWorld,
-            toWorldPosition : toWorldPosition,
+            transformScreenToWork : transformScreenToWork,
+            toWorkPosition : toWorkPosition,
 
             getTouchableAt : getTouchableAt,
         };

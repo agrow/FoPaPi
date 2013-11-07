@@ -53,17 +53,33 @@ define([], function() {
                 this.x = r * Math.cos(theta);
                 this.y = r * Math.sin(theta);
             },
-
             setToPolarOffset : function(v, r, theta) {
                 this.x = v.x + r * Math.cos(theta);
                 this.y = v.y + r * Math.sin(theta);
                 this.z = v.z;
             },
-            
             setToMultiple : function(v, m) {
                 this.x = v.x * m;
                 this.y = v.y * m;
                 this.z = v.z * m;
+            },
+            setToLerp : function(v0, v1, m) {
+                var m1 = 1 - m;
+                this.x = v0.x * m + v1.x * m1;
+                this.y = v0.y * m + v1.y * m1;
+                this.z = v0.z * m + v1.z * m1;
+            },
+
+            setToAddMultiple : function(v0, m0, v1, m1) {
+                this.x = v0.x * m0 + v1.x * m1;
+                this.y = v0.y * m0 + v1.y * m1;
+                this.z = v0.z * m0 + v1.z * m1;
+            },
+
+            setToDifference : function(v0, v1) {
+                this.x = v0.x - v1.x;
+                this.y = v0.y - v1.y;
+                this.z = v0.z - v1.z;
             },
             setTo : function(x, y, z) {
                 // Just in case this was passed a vector
