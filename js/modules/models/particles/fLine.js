@@ -51,6 +51,7 @@ define(["inheritance", "modules/models/vector", "uparticle"], function(Inheritan
 			// Just set new points. figure out where the edges should go
 			calcEdgePoints: function(){
 				if(this.p[2].x - this.p[1].x === 0){
+					utilities.debugOutput(this);
 					console.log("SLOPE ERROR: DIVIDING BY ZERO");
 				} else {
 					this.m = (this.p[2].y - this.p[1].y)/(this.p[2].x - this.p[1].x);
@@ -67,6 +68,7 @@ define(["inheritance", "modules/models/vector", "uparticle"], function(Inheritan
 					this.restrainInScreen(vect);
 					
 					/////////////////// Doesn't keep directionality //////////////
+					/*
 					this.setPoint(3, vect);
 					x = -fopapiGame.workView.dimensions.width/2;
 					y = this.m * x + this.b;
@@ -74,9 +76,9 @@ define(["inheritance", "modules/models/vector", "uparticle"], function(Inheritan
 					
 					this.restrainInScreen(vect);
 					this.setPoint(0, vect);
-					
+					*/
 					////////////////// KEEPS DIRECTIONALITY ///////////////////////
-					/*
+					
 					// if this right x is closer to p3 than p0 (ie distance to 0 is > than to 3)
 					if(this.p[1].getDistanceTo(vect) > this.p[2].getDistanceTo(vect)){
 						// put it in point 3
@@ -99,7 +101,7 @@ define(["inheritance", "modules/models/vector", "uparticle"], function(Inheritan
 						
 						this.restrainInScreen(vect);
 						this.setPoint(3, vect);
-					}*/
+					}
 				}
 			},
 			
@@ -107,8 +109,14 @@ define(["inheritance", "modules/models/vector", "uparticle"], function(Inheritan
 				if(vect.x > fopapiGame.workView.dimensions.width/2) vect.x = fopapiGame.workView.dimensions.width/2;
 				if(vect.x < -fopapiGame.workView.dimensions.width/2) vect.x = -fopapiGame.workView.dimensions.width/2;
 				
-				//if(vect.y > fopapiGame.workView.dimensions.height/2) vect.y = fopapiGame.workView.dimensions.height/2;
-				//if(vect.y < -fopapiGame.workView.dimensions.height/2) vect.y = -fopapiGame.workView.dimensions.height/2;
+				if(vect.y > fopapiGame.workView.dimensions.height/2) {
+					vect.x = ((fopapiGame.workView.dimensions.height/2)-this.b)/this.m;
+					vect.y = fopapiGame.workView.dimensions.height/2;
+				}
+				if(vect.y < -fopapiGame.workView.dimensions.height/2) {
+					vect.x = ((-fopapiGame.workView.dimensions.height/2)-this.b)/this.m;
+					vect.y = -fopapiGame.workView.dimensions.height/2;
+				}
 				
 			},
 

@@ -67,23 +67,41 @@ define(["modules/models/vector", "jQueryUITouchPunch", "jQueryHammer"], function
             
             updateTouchPositions : function(p) {
             	utilities.debugOutput("updating TouchPositions");
+            	//utilities.debugOutput("uTP p: " + p);
+            	//console.log(p);
             	
                 var touch = this;
                 if (p === undefined) {
+                	
                     p = touch.screenPosition;
                 }
                 
-                var w = workView.dimensions.width;
-                var h = workView.dimensions.height;
+                // If the position is updated
+                // set the last positions to the current position;
+                touch.planeLast.setTo(touch.planePosition);
+                touch.screenLast.setTo(touch.screenPosition);
+                touch.screenPosition.setTo(p);
+                if (touch.pressed) {
+
+                    touch.dragOffset.setTo(-touch.lastPressed.x + p.x, -touch.lastPressed.y + p.y);
+                }
+                
+               
 
 				//var p = toRelative(this, e);
                 
                 // Find the offset since the last movement
-                touch.lastOffset.setTo(p[0] + touch.currentPosition.x, p[1] + touch.currentPosition.y);
-                touch.currentPosition.setTo(p[0] - w / 2, p[1] - h / 2);
+                //touch.planePosition.setTo(pagePositionToRelativePosition(touch.screenPosition, 
+                touch.currentPosition.setTo(p.x, p.y);
+                touch.planePosition.setTo(p.x, p.y);
                 touch.currentWorkPosition.setTo(touch.currentPosition);
                 touch.transformScreenToWork(touch.currentWorkPosition);
+                //touch.lastOffset.setTo(p[0] + touch.currentPosition.x, p[1] + touch.currentPosition.y);
+                //touch.currentPosition.setTo(p[0] - w / 2, p[1] - h / 2);
+                //touch.currentWorkPosition.setTo(touch.currentPosition);
+                //touch.transformScreenToWork(touch.currentWorkPosition);
 
+				/*
                 touch.historyIndex = (touch.historyIndex + 1) % maxHistory;
                 touch.history[touch.historyIndex] = touch.currentPosition.clone();
 
@@ -94,7 +112,26 @@ define(["modules/models/vector", "jQueryUITouchPunch", "jQueryHammer"], function
                     touch.dragOffset.setTo(-touch.lastPressed.x + p[0], -touch.lastPressed.y + p[1]);
                 } 
                 controlUpdated();
+                */
+                // Set the offsets
+                touch.screenOffset.setToAddMultiple(touch.screenPosition, 1, touch.screenLast, -1)
+
+                touch.planeOffset.setToAddMultiple(touch.planePosition, 1, touch.planeLast, -1);
+
+                // How far is the touch from the screen's center position on the plane?
+                //touch.planeCenterOffset.setToDifference(universeView.camera.position, touch.planePosition);
+
+				var w = workView.dimensions.width;
+                var h = workView.dimensions.height;
                 
+                touch.screenPct.setTo(touch.screenPosition);
+                touch.screenPct.x /= w * .5;
+                touch.screenPct.y /= h * .5;
+                touch.screenPct.z = 0;
+
+                // Add to the history
+                touch.historyIndex = (touch.historyIndex + 1) % maxHistory;
+                touch.history[touch.historyIndex] = new Vector(touch.planePosition);
                 
             },
             
@@ -163,6 +200,7 @@ define(["modules/models/vector", "jQueryUITouchPunch", "jQueryHammer"], function
             },
 
             touchUp : function(p) {
+            	//console.log("tU p: " + p);
                 touch.updateTouchPositions(p);
                 touch.updateTouchContext();
 
@@ -248,14 +286,22 @@ define(["modules/models/vector", "jQueryUITouchPunch", "jQueryHammer"], function
 	        */
 	        
 	        workDiv.on("mousemove", function(ev) {
-	            //var p = eventToScreenPos(ev);
-	            touch.updateTouchPositions();
+	        	//console.log(ev);
+	            //var p = toRelative(workDiv, ev);
+	            //console.log("mm p: " + p);
+	            
+	            var p2 = new Vector(ev.pageX, ev.pageY);
+	            var relPos = pagePositionToRelativePosition(workDiv, p2);
+	            var screenPos = touch.toScreenPosition(relPos);
+	            
+	            touch.updateTouchPositions(screenPos);
 	        });
 	        
 	
 	        // Bind these events to hammer actions
 	
 	        var eventToScreenPos = function(ev) {
+	        	//console.log(ev);
 	            var p = new Vector(ev.gesture.center.pageX, ev.gesture.center.pageY);
 	            var relPos = pagePositionToRelativePosition(workDiv, p);
 	            var screenPos = touch.toScreenPosition(relPos);
@@ -316,9 +362,12 @@ define(["modules/models/vector", "jQueryUITouchPunch", "jQueryHammer"], function
             // var parentOffset = $(div).parent().offset();
             var parentOffset = $(div).offset();
             //or $(this).offset(); if you really just want the current element's offset
-            var relX = e.pageX - parentOffset.left;
-            var relY = e.pageY - parentOffset.top;
-            return [relX, relY];
+            //var relX = e.pageX - parentOffset.left;
+            //var relY = e.pageY - parentOffset.top;
+            //return [relX, relY];
+            
+            var relPos = new Vector(e.pageX - parentOffset.left, e.pageY - parentOffset.top);
+	        return relPos;
         };
         
         var pagePositionToRelativePosition = function(div, pagePos) {
