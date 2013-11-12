@@ -119,16 +119,27 @@ define(["inheritance", "modules/models/vector", "uparticle"], function(Inheritan
 				}
 				
 			},
-
-            drawMain : function(context) {
-                this._super(context);
-
-                var g = context.g;
-                
-            },
+			
+			calcIntersectionInfo : function(){
+				this.A = this.p[3].y - this.p[0].y;
+				this.B = this.p[0].x - this.p[3].x;
+				this.C = this.A*this.p[0].x + this.B*this.p[0].y;
+			},
+			
+			// algorithm from here: http://community.topcoder.com/tc?module=Static&d1=tutorials&d2=geometry2
+			// ASSUMES: Both lines have recently (since points have been last changed) had their calcIntersectionInfo() called
+			calcIntersectionPoint : function(otherLine){
+				var det = this.A*otherLine.B - otherLine.A*this.B;
+				if(det === 0){
+					console.log("TWO LINES ARE PARALLEL: No intersection");
+				} else {
+					return new Vector((otherLine.B*this.C - this.B*otherLine.C)/det, (this.A*otherLine.C - otherLine.A*this.C)/det);
+				}
+			},
             
             draw : function(g){
             	//this._super(g);
+            	utilities.debugOutput("drawing " + this.name);
             	
             	this.idColor.fill(g);
                 g.noStroke();
@@ -138,6 +149,44 @@ define(["inheritance", "modules/models/vector", "uparticle"], function(Inheritan
             	
             	g.stroke();
             	this.p[0].drawLineTo(g, this.p[3]);
+            },
+            
+            // Note: this wiggle room is not quite "distance to line"
+            // But it's some close approximation!
+            checkCollision : function(vect, wiggle){
+            	this.collisionDetected = false;
+            	
+            	this.calcIntersectionInfo();
+            	var d = Math.abs(this.A*vect.x + this.B*vect.y - this.C)/Math.sqrt(this.A*this.A + this.B*this.B);
+            	console.log("distance? : " + d);
+            	
+            	if(d < wiggle) {
+            		utilities.debugOutput("collided with " + this.name);
+            		this.collisionDetected = true;
+            		return true;
+            	}
+            	return false;
+            },
+            
+            projectPointToLine : function(vect){
+            	console.log(this.p[0] + ", " + this.p[3] + " vs. " + vect);
+            	
+            	this.length = this.p[0].getDistanceTo(this.p[3]);
+            	// if the length is 0, should never happen, but cannot divide by zero
+            	if(this.length === 0) return this.p[0];
+            	console.log("vect1: " + vect);
+            	var t = (vect.sub(this.p[0]).dot(this.p[0].sub(this.p[3])))/(this.length*this.length);
+            	console.log("vect2: " + vect);
+            	console.log("Complex geometry says this point is % along the line: " + t);
+            	
+            	if(t < 0) return this.p[0];
+            	else if(t > 1) return this.p[3];
+            	
+            	var projection = this.p[0].add(this.p[3].sub(this.p[0]).mult(t));
+            	console.log("projection calculated: " + projection);
+            	
+            	console.log(this.p[0] + ", " + this.p[3] + " vs. " + vect);
+            	return projection;
             },
 
 

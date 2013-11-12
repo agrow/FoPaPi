@@ -4,13 +4,14 @@
 
 // Create the way that the game will render on-screen
 
-define(["modules/models/vector", "jQueryUITouchPunch", "jQueryHammer"], function(Vector, $) {
+define(["modules/models/vector", "modules/controllers/tool_controller", "jQueryUITouchPunch", "jQueryHammer"], function(Vector, ToolController, $) {
     var maxHistory = 50;
     return (function() {
 
         // Attach mouse events to the work window
         var workDiv = $("#work_canvas");
         var workView;
+        var toolController = ToolController;
         
         var touch = {
             lastPressed : new Vector(0, 0),
@@ -248,11 +249,19 @@ define(["modules/models/vector", "jQueryUITouchPunch", "jQueryHammer"], function
                 //touch.output();
 
             },
-            /*
+            
+            
             touchMove : function(p){
-            	touch.updateTouchPositions(p);
-                touch.updateTouchContext();
-            }*/
+            	// touch.pressed = dragging, not moving
+            	if(!touch.pressed){
+            		touch.updateTouchPositions(p);
+            		touch.updateTouchContext();
+            		
+            		if(touch.activeTool !== undefined){
+            			touch.activeTool.touchMove(touch);
+            		}
+            	}
+            }
             
         };
 
@@ -286,15 +295,13 @@ define(["modules/models/vector", "jQueryUITouchPunch", "jQueryHammer"], function
 	        */
 	        
 	        workDiv.on("mousemove", function(ev) {
-	        	//console.log(ev);
-	            //var p = toRelative(workDiv, ev);
-	            //console.log("mm p: " + p);
-	            
+
 	            var p2 = new Vector(ev.pageX, ev.pageY);
 	            var relPos = pagePositionToRelativePosition(workDiv, p2);
 	            var screenPos = touch.toScreenPosition(relPos);
 	            
-	            touch.updateTouchPositions(screenPos);
+	            touch.touchMove(screenPos);
+	            //touch.updateTouchPositions(screenPos);
 	        });
 	        
 	
@@ -379,6 +386,13 @@ define(["modules/models/vector", "jQueryUITouchPunch", "jQueryHammer"], function
 	        var relPos = new Vector(pagePos.x - parentOffset.left, pagePos.y - parentOffset.top);
 	        return relPos;
 	    };
+	    
+	    //=======================================================
+        // Getters
+	    
+	    var getToolController = function(){
+	    	return toolController;
+	    }
 
         //=======================================================
         // Initialize the work controller
@@ -393,11 +407,14 @@ define(["modules/models/vector", "jQueryUITouchPunch", "jQueryHammer"], function
         	
             fopapiGame.touch = touch;
             initTouchFunctions();
+            
+            toolController.init();
         };
 
         return {
             init : init,
             onControl : onControl,
+            getToolController : getToolController,
 
         };
     })();

@@ -4,7 +4,7 @@
 
 // Its the World!
 
-define(["modules/models/vector", "kcolor", "modules/models/fopapiDesign", "modules/models/particles/fLine"], function(Vector, KColor, FopapiDesign, FLine) {
+define(["modules/models/vector", "kcolor", "modules/models/fopapiDesign", "modules/models/particles/fShape"], function(Vector, KColor, FopapiDesign) {
 
     return (function() {
 
@@ -14,9 +14,6 @@ define(["modules/models/vector", "kcolor", "modules/models/fopapiDesign", "modul
         
 
         var design;
-
-        var testLine = new FLine();
-        var testClick = false;
 
         function draw(g, options) {
         	g.noStroke();
@@ -31,16 +28,13 @@ define(["modules/models/vector", "kcolor", "modules/models/fopapiDesign", "modul
 	        	g.noStroke();
 	        	g.fill(.5, 1, 1, 1);
 	        	if(fopapiGame.touch.pressed){
-	        		//console.log(fopapiGame.touch.currentWorkPosition);
 	        		fopapiGame.touch.currentWorkPosition.drawCircle(g, 6);
-	        		//console.log(fopapiGame.touch.currentWorkPosition);
-	        		utilities.debugOutput("Mouse down at " + fopapiGame.touch.currentWorkPosition);
 	        		
 	        	} else {
 	        		fopapiGame.touch.currentWorkPosition.drawCircle(g, 3);
 	        	}
 	        }
-	        testLine.draw(g, options);
+	        
 	        
         };
         
@@ -142,25 +136,6 @@ define(["modules/models/vector", "kcolor", "modules/models/fopapiDesign", "modul
 		           utilities.debugOutput("MD (update) at " + fopapiGame.touch.currentWorkPosition);
 	            }
             }
-            
-			if(fopapiGame.touch){
-	        	if(fopapiGame.touch.pressed){
-	        		if(testClick === false){
-	        			// click something!
-	        			console.log("Clicking at " + fopapiGame.touch.currentWorkPosition);
-	        			testLine.setPoint(1, fopapiGame.touch.currentWorkPosition);
-	        			testClick = true;
-	        			console.log("SETTING POINT CLICKING line: \n" + testLine);
-	        			 
-	        		}
-	        	} else {
-	        		testClick = false;
-	        	}
-	        	
-	        	testLine.setPoint(2, fopapiGame.touch.currentWorkPosition);
-	        	testLine.calcEdgePoints();
-	        }
-
         };
 
         function init() {

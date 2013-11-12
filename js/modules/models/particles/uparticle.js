@@ -82,7 +82,7 @@ define(["inheritance", "modules/models/vector", "noise", "kcolor"], function(Inh
 
             },
 
-            drawMain : function(g, options) {
+            draw : function(g, options) {
 
                 this.idColor.fill(g);
                 g.noStroke();
@@ -108,14 +108,15 @@ define(["inheritance", "modules/models/vector", "noise", "kcolor"], function(Inh
                 })
             },
             draw : function(g, options) {
-
+				this.draw(g, options);
+				
                 switch(options.layer) {
                     case "bg":
                         this.drawBackground(g, options);
                         break;
 
                     case "main":
-                        this.drawMain(g, options);
+                        this.draw(g, options);
 
                         break;
 

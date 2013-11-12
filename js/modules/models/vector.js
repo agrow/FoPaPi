@@ -105,6 +105,10 @@ define([], function() {
             magnitude : function() {
                 return Math.sqrt(this.x * this.x + this.y * this.y + this.z * this.z);
             },
+            
+            normalize : function() {
+                this.div(this.magnitude());
+            },
 
             constrainMagnitude : function(min, max) {
                 var d = this.magnitude();
@@ -120,6 +124,25 @@ define([], function() {
                 var dz = this.z - p.z;
                 return Math.sqrt(dx * dx + dy * dy + dz * dz);
             },
+            
+            getAngleTo : function(p) {
+                var dx = this.x - p.x;
+                var dy = this.y - p.y;
+                //var dz = this.z - p.z;
+                return Math.atan2(dy, dx);
+            },
+            
+            //===========================================================
+            //===========================================================
+            // Complex geometry
+
+            dot : function(v) {
+                return v.x * this.x + v.y * this.y + v.z * this.z;
+            },
+
+            //getAngleTo : function(v) {
+            //    return Math.acos(this.dot(v) / (this.magnitude() * v.magnitude()));
+            //},
 
             //===========================================================
             //===========================================================

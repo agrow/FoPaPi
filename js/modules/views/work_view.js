@@ -28,6 +28,7 @@ define(["processing", "modules/models/vector", "modules/models/work"], function(
         	width: 500,
         	height: 600 
         }
+        fopapiGame.workViewDimensions = dimensions;
         
         var init = function(){
         	work = Work;
@@ -124,15 +125,19 @@ define(["processing", "modules/models/vector", "modules/models/work"], function(
 
         var getTouchableAt = function(p) {
         	
-            // utilities.debugOutput("Get touchable at " + p);
+            utilities.debugOutput("Get touchable at " + p);
 
-            var touchables = [];
+            
             var target = new Vector(p.x + camera.center.x, p.y + camera.center.y, 0);
 
             var minDist = 5;
+            
+            var touchables = work.getDesign().checkCollision(target, minDist);
             // go through all the objects and find the closest (inefficient, but fine for now)
             // utilities.debugArrayOutput(activeObjects);
 
+			
+			/*
             var length = activeObjects.length;
             $.each(activeObjects, function(index, obj) {
 
@@ -150,7 +155,7 @@ define(["processing", "modules/models/vector", "modules/models/work"], function(
                     }
                 }
 
-            });
+            });*/
             //          utilities.debugOutput("...done<br> ");
             // utilities.debugArrayOutput(touchables);
 
