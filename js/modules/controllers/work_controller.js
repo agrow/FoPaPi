@@ -115,7 +115,7 @@ define(["modules/models/vector", "modules/controllers/tool_controller", "jQueryU
                 controlUpdated();
                 */
                 // Set the offsets
-                touch.screenOffset.setToAddMultiple(touch.screenPosition, 1, touch.screenLast, -1)
+                touch.screenOffset.setToAddMultiple(touch.screenPosition, 1, touch.screenLast, -1);
 
                 touch.planeOffset.setToAddMultiple(touch.planePosition, 1, touch.planeLast, -1);
 
@@ -234,14 +234,14 @@ define(["modules/models/vector", "modules/controllers/tool_controller", "jQueryU
                 // touch the objects
                 if (touch.overObjects.length > 0) {
 
-                    console.log("PRESS " + touch.overObjects[0].name);
+                    //console.log("PRESS " + touch.overObjects[0].name);
                     if (touch.overObjects[0]) {
                         if (touch.selectedObject) {
                             touch.selectedObject.deselect();
                         }
 
                         touch.selectedObject = touch.overObjects[0];
-                        touch.selectedObject.select();
+                        //touch.selectedObject.select();
                     }
                 } else
                     console.log("PRESS NOTHING");

@@ -31,7 +31,7 @@ define(["inheritance", "modules/models/vector"], function(Inheritance, Vector) {
             				if(imgAspect<divAspect) $("#imgPreview").attr("height", "100%");
             				if(imgAspect>divAspect) $("#imgPreview").attr("width", "100%");
             				*/
-            			}
+            			};
             			img.src = e.target.result;
             			fopapiGame.liveProject.img = img;
             			

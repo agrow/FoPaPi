@@ -27,7 +27,7 @@ define(["processing", "modules/models/vector", "modules/models/work"], function(
         var dimensions = {
         	width: 500,
         	height: 600 
-        }
+        };
         fopapiGame.workViewDimensions = dimensions;
         
         var init = function(){
@@ -159,6 +159,7 @@ define(["processing", "modules/models/vector", "modules/models/work"], function(
             //          utilities.debugOutput("...done<br> ");
             // utilities.debugArrayOutput(touchables);
 
+			utilities.debugOutput("Collided with " + touchables.lengh + " objects");
             return touchables;
 
         };

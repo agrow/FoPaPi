@@ -12,6 +12,7 @@ define(["inheritance", "modules/models/vector", "uparticle", "modules/models/par
 
                 this._super();
 
+				this.fShape = true;
                 this.name = "shape" + this.idNumber;
 
 				// Used to draw the shape
@@ -22,17 +23,28 @@ define(["inheritance", "modules/models/vector", "uparticle", "modules/models/par
 				
 				// Child-shapes made of subdivisions of its lines with new lines
 				this.shapes = [];
+				
+				fopapiGame.liveDesign.addObject(this.name, this);
             },
 
 			addPoint: function(vect) {
 				this.points.push(new Vector(vect.x, vect.y));
 			},
 			
-			calculateLines : function() {
+			removeAllLines: function(){
+				for (var i = 0; i < this.lines.length; i++){
+					fopapiGame.liveDesign.removeObject(this.lines[i].name);
+				}
+				
 				this.lines = [];
+			},
+			
+			calculateLines : function() {
+				this.removeAllLines();
 				if(this.points.length > 1){
 					for(var i = 1; i < this.points.length; i++){
 						var fLine = new FLine();
+						fLine.parentShape = this;
 						fLine.setPoint(0, this.points[i-1]);
 						fLine.setPoint(3, this.points[i]);
 						this.lines.push(fLine);
@@ -41,6 +53,7 @@ define(["inheritance", "modules/models/vector", "uparticle", "modules/models/par
 					if(this.points.length > 2){
 						// And a closing line
 						var lastLine = new FLine();
+						lastLine.parentShape = this;
 						lastLine.setPoint(0, this.points[this.points.length-1]);
 						lastLine.setPoint(3, this.points[0]);
 						this.lines.push(lastLine);
@@ -84,9 +97,13 @@ define(["inheritance", "modules/models/vector", "uparticle", "modules/models/par
             		this.points[i].drawCircle(g, 3);
             	}
             	
-            	if(this.collisionDetected) this.idColor.fill(g, .5, -.5);
+            	// Draw the lines.
+            	// Note: all the lines are already drawn. So we may just want to fill in the shape instead
+            	if(this.collisionDetected) this.idColor.fill(g, .5, -.8);
             	else g.noFill();
-            	this.idColor.stroke(g, .5);
+            	
+            	this.idColor.stroke(g, .5, 1);
+            	
             	g.beginShape();
             	for(var i = 0; i < this.points.length; i++){
             		g.vertex(this.points[i].x, this.points[i].y);
@@ -94,15 +111,20 @@ define(["inheritance", "modules/models/vector", "uparticle", "modules/models/par
             	g.endShape(g.CLOSE);
             	
             	// Draw all other child-shapes after. Can be a mode where we draw them first?
+            	/*
             	for(var i = 0; i < this.shapes.length; i++){
             		this.shapes[i].draw(g);
-            	}
+            	}*/
             	
             },
 
 
             update : function(time) {
                 this._super(time);
+            },
+            
+            checkSubdivideCollision: function(vect, wiggle){
+            	this.checkCollision(vect, wiggle);
             },
             
             checkCollision: function(vect, wiggle){

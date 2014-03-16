@@ -14,17 +14,25 @@ define(["inheritance", "modules/models/vector", "uparticle"], function(Inheritan
             init : function() {
 
                 this._super();
+                
+                this.fLine = true;
 
+				// Used to id the line and create/destroy it
                 this.name = "line" + this.idNumber;
+                
+                // Will likely be a shape
+                this.parentShape = undefined;
 
 				// y = mx + b
 				this.m = 0;
 				this.b = 0;
 				this.p = [];
-				this.p[0] = new Vector(0,0); // Edge of the screen. COMPUTED, NOT SET
+				this.p[0] = new Vector(0,0); // Draw start pt
 				this.p[1] = new Vector(0,0); // First point set by user/algorithm
 				this.p[2] = new Vector(0,0); // Second point set by user/algorithm
-				this.p[3] = new Vector(0,0); // Edge of the screen. COMPUTED, NOT SET
+				this.p[3] = new Vector(0,0); // Draw end pt
+				
+				fopapiGame.liveDesign.addObject(this.name, this);
             },
 
 			setPoint: function(num, vect) {
@@ -141,14 +149,18 @@ define(["inheritance", "modules/models/vector", "uparticle"], function(Inheritan
             	//this._super(g);
             	utilities.debugOutput("drawing " + this.name);
             	
-            	this.idColor.fill(g);
+            	this.idColor.fill(g, .8, 1);
                 g.noStroke();
             	for(var i = 0; i < this.p.length; i++){
             		this.p[i].drawCircle(g, 3);
             	}
             	
-            	g.stroke();
+            	this.idColor.stroke(g, .8, 1);
             	this.p[0].drawLineTo(g, this.p[3]);
+            },
+            
+            checkSubdivideCollision: function(vect, wiggle){
+            	// Handled in shape
             },
             
             // Note: this wiggle room is not quite "distance to line"
@@ -158,7 +170,7 @@ define(["inheritance", "modules/models/vector", "uparticle"], function(Inheritan
             	
             	this.calcIntersectionInfo();
             	var d = Math.abs(this.A*vect.x + this.B*vect.y - this.C)/Math.sqrt(this.A*this.A + this.B*this.B);
-            	console.log("distance? : " + d);
+            	//console.log("distance? : " + d);
             	
             	if(d < wiggle) {
             		utilities.debugOutput("collided with " + this.name);
@@ -175,18 +187,43 @@ define(["inheritance", "modules/models/vector", "uparticle"], function(Inheritan
             	// if the length is 0, should never happen, but cannot divide by zero
             	if(this.length === 0) return this.p[0];
             	console.log("vect1: " + vect);
-            	var t = (vect.sub(this.p[0]).dot(this.p[0].sub(this.p[3])))/(this.length*this.length);
+            	console.log(vect);
+            	
+            	var temp1 = new Vector(0, 0);
+            	vect.cloneInto(temp1);
+            	temp1.sub(this.p[0]);//.sub(this.p[0]);
+            	console.log("temp1: " + temp1);
+            	
+            	var temp2 = new Vector(0, 0);
+            	this.p[0].cloneInto(temp2);
+            	temp2.sub(this.p[3]);
+            	console.log("temp2: " + temp2);
+            	
+            	console.log("dot: " + temp1.dot(temp2));
+            	
+            	// Turns out negative, not sure why. BUMP IT UP!
+            	var t = Math.abs((temp1.dot(temp2))/(this.length*this.length));
             	console.log("vect2: " + vect);
             	console.log("Complex geometry says this point is % along the line: " + t);
             	
             	if(t < 0) return this.p[0];
             	else if(t > 1) return this.p[3];
             	
-            	var projection = this.p[0].add(this.p[3].sub(this.p[0]).mult(t));
-            	console.log("projection calculated: " + projection);
+            	var temp3 = new Vector(0, 0);
+            	this.p[3].cloneInto(temp3);
+            	temp3.sub(this.p[0]);
+            	temp3.mult(t);
+            	console.log("temp3: " + temp3);
+            	
+            	var temp4 = new Vector(0, 0);
+            	this.p[0].cloneInto(temp4);
+            	temp4.add(temp3);
+            	
+            	//var projection = this.p[0].add(this.p[3].sub(this.p[0]).mult(t));
+            	console.log("projection calculated: " + temp4);
             	
             	console.log(this.p[0] + ", " + this.p[3] + " vs. " + vect);
-            	return projection;
+            	return temp4;
             },
 
 

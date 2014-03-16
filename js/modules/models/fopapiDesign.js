@@ -8,6 +8,7 @@ define(["inheritance", "modules/models/vector", "modules/models/particles/fShape
         var FopapiDesign = Class.extend({
             init : function() {
             	this.testClick = false;
+            	fopapiGame.liveDesign = this;
             	
                 this.objects = [];
                 this.objectIDs = [];
@@ -25,7 +26,9 @@ define(["inheritance", "modules/models/vector", "modules/models/particles/fShape
             	this.firstShape.addPoint(new Vector(-fopapiGame.workViewDimensions.width/2 +adj, fopapiGame.workViewDimensions.height/2 -adj));
             	
             	this.firstShape.calculateLines();
-            	this.addObject(this.firstShape.name, this.firstShape);
+            	
+            	// New shapes are automatically added to this now
+            	//this.addObject(this.firstShape.name, this.firstShape);
             	
             	/*
             	var testShape = new FShape();
@@ -65,7 +68,11 @@ define(["inheritance", "modules/models/vector", "modules/models/particles/fShape
             },
             
             checkCollision : function(vect, wiggle){
-            	return this.firstShape.checkCollision(vect, wiggle);
+            	var collided = [];
+            	for (var i = 0; i < this.objects.length; i++){
+            		if(this.objects[i].checkCollision(vect, wiggle)) collided.push(this.objects[i]);
+            	}
+            	return collided; //this.firstShape.checkCollision(vect, wiggle);
             },
             
             draw : function(g, options){

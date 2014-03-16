@@ -155,6 +155,7 @@ define([], function() {
 
             },
             sub : function(v) {
+            	//console.log("subbing " + v + " from " + this);
                 this.x -= v.x;
                 this.y -= v.y;
                 this.z -= v.z;
